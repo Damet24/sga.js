@@ -9,13 +9,21 @@ export const createStudent = async (req, res) => {
   console.log(req.body)
   const newStudent = new Student({ name, last_name, document, day_birth })
 
-  await newStudent.save()
-  res.json(newStudent)
+  try{
+    await newStudent.save()
+    res.status(201).json(newStudent)
+  }
+  catch({ message, name }){
+    console.error(name)
+    if(name == 'MongoServerError'){
+      res.status(400).json({message})
+    }
+  }
 }
 
 export const getStudents = async (req, res) => {
   const students = await Student.find()
-  res.json(students)
+  res.status(200).json(students)
 }
 
 export const updateStudent = (req, res) => {
